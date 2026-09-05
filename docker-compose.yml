@@ -24,6 +24,8 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sh:/docker-entrypoint-initdb.d/init_db.sh:ro
+      - ./data/db_dump:/data/db_dump:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-lenny_growth_db}"]
       interval: 5s

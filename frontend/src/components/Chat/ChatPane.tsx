@@ -34,7 +34,7 @@ interface ChatPaneProps {
   errorInfo?: SSEErrorData | null;
   activeProvider: ChatProvider;
   activeModel?: string;
-  onSendMessage: (query: string, mode: ChatMode) => void;
+  onSendMessage: (query: string, mode: ChatMode, suggestedTitle?: string) => void;
   onAbortStream: () => void;
   onSelectModel?: (provider: ChatProvider, model: string) => void;
   isLoadingHistory?: boolean;
@@ -87,9 +87,9 @@ export function ChatPane({
   }, [messages, streamingContent, streamingStatus, userScrolledUp]);
 
   // Reset user scroll state when a new query is submitted
-  const handleSend = (query: string, mode: ChatMode) => {
+  const handleSend = (query: string, mode: ChatMode, suggestedTitle?: string) => {
     setUserScrolledUp(false);
-    onSendMessage(query, mode);
+    onSendMessage(query, mode, suggestedTitle);
   };
 
   return (

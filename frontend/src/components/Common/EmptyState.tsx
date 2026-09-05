@@ -15,7 +15,7 @@ import { Target, TrendingUp, Repeat, FlaskConical, ArrowUpRight } from "lucide-r
 import { ChatMode } from "../../types/chat";
 
 interface EmptyStateProps {
-  onSelectPrompt: (prompt: string, mode: ChatMode) => void;
+  onSelectPrompt: (prompt: string, mode: ChatMode, suggestedTitle?: string) => void;
 }
 
 interface StarterItem {
@@ -89,7 +89,7 @@ export function EmptyState({ onSelectPrompt }: EmptyStateProps) {
               <button
                 key={item.title}
                 type="button"
-                onClick={() => onSelectPrompt(item.prompt, "default")}
+                onClick={() => onSelectPrompt(item.prompt, "default", item.title)}
                 className="group p-3.5 rounded-xl bg-surface border border-border hover:border-signal/50 hover:bg-surface-raised transition-all text-left flex flex-col justify-between shadow-xs active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal"
               >
                 <div className="space-y-1.5">

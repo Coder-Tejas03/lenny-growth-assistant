@@ -73,7 +73,7 @@ export function SessionList({
         <button
           type="button"
           onClick={onNewChat}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border text-content text-xs font-medium shadow-xs transition-all active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-raised hover:bg-surface-hover hover:border-signal/40 border border-border text-content text-xs font-semibold shadow-xs transition-all active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 text-signal" />
           <span>New Chat</span>

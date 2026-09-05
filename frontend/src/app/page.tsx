@@ -20,6 +20,7 @@ import { useSessions } from "../hooks/useSessions";
 import { useChatStream } from "../hooks/useChatStream";
 import { ChatMode, ChatProvider } from "../types/chat";
 import { Artifact, Message } from "../types/session";
+import { generateChatTitle } from "../lib/title-generator";
 
 export default function Home() {
   const [selectedProvider, setSelectedProvider] = useState<ChatProvider>("openai");
@@ -85,15 +86,29 @@ export default function Home() {
   });
 
   // Handle user query submission
-  const handleSendMessage = async (query: string, mode: ChatMode) => {
+  const handleSendMessage = async (
+    query: string,
+    mode: ChatMode,
+    suggestedTitle?: string
+  ) => {
     let targetSessionId = activeSessionId;
 
-    // If no active session, create one automatically
+    // Check if the current session has a default placeholder title
+    const currentSessionSummary = sessions.find((s) => s.id === targetSessionId);
+    const isDefaultTitle =
+      !currentSessionSummary ||
+      currentSessionSummary.title === "New Conversation" ||
+      currentSessionSummary.title.trim() === "";
+
+    // If no active session, create one automatically with the smart title
     if (!targetSessionId) {
-      const generatedTitle =
-        query.length > 36 ? query.slice(0, 36) + "..." : query;
+      const generatedTitle = generateChatTitle(query, suggestedTitle);
       targetSessionId = await createNewSession(generatedTitle);
       if (!targetSessionId) return;
+    } else if (isDefaultTitle) {
+      // Auto-rename session on first message while preserving any manual rename
+      const generatedTitle = generateChatTitle(query, suggestedTitle);
+      renameSession(targetSessionId, generatedTitle);
     }
 
     // Optimistically add user query to conversation timeline
@@ -130,6 +145,11 @@ export default function Home() {
   const handleNewChat = async () => {
     if (isStreaming) {
       abortStream();
+    }
+    // If currently on an empty session, reuse it rather than spawning duplicate empty rows
+    if (activeSession && activeSession.messages.length === 0) {
+      setIsSidebarOpen(false);
+      return;
     }
     await createNewSession("New Conversation");
     setIsSidebarOpen(false);

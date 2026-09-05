@@ -22,6 +22,25 @@ interface SessionItemProps {
   onDelete: (id: string) => void;
 }
 
+function formatRelativeTime(isoString?: string): string {
+  if (!isoString) return "";
+  try {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffSec = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (diffSec < 60) return "Just now";
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHours = Math.floor(diffMin / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  } catch {
+    return "";
+  }
+}
+
 export function SessionItem({
   session,
   isActive,
@@ -34,6 +53,7 @@ export function SessionItem({
   const [showMenu, setShowMenu] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const relativeTime = formatRelativeTime(session.updated_at);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -41,6 +61,11 @@ export function SessionItem({
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  // Keep local edit title in sync if session.title updates externally
+  useEffect(() => {
+    setEditTitle(session.title);
+  }, [session.title]);
 
   // Close menu on click outside or escape key
   useEffect(() => {
@@ -123,16 +148,23 @@ export function SessionItem({
         type="button"
         onClick={() => onSelect(session.id)}
         aria-current={isActive ? "page" : undefined}
-        className="flex-1 flex items-center gap-2.5 text-left py-2 px-2.5 min-w-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal rounded-l-lg"
+        className="flex-1 flex items-start gap-2.5 text-left py-2 px-2.5 min-w-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal rounded-l-lg"
       >
         <MessageSquare
-          className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+          className={`w-3.5 h-3.5 shrink-0 mt-0.5 transition-colors ${
             isActive ? "text-signal" : "text-content-subtle group-hover:text-content-muted"
           }`}
         />
-        <span className="truncate leading-relaxed" title={session.title}>
-          {session.title}
-        </span>
+        <div className="min-w-0 flex-1">
+          <div className="truncate leading-snug" title={session.title}>
+            {session.title}
+          </div>
+          {relativeTime && (
+            <div className="text-[10px] text-content-subtle font-mono mt-0.5 leading-none">
+              {relativeTime}
+            </div>
+          )}
+        </div>
       </button>
 
       <div className="relative pr-1.5 shrink-0" ref={menuRef}>

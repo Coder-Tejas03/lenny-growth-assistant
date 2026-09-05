@@ -74,10 +74,15 @@ cd lenny-growth-assistant
 
 # 2. Configure environment from safe template
 cp .env.example .env
-# Edit .env and supply your OPENAI_API_KEY (if using cloud inference)
+# Edit .env and supply your OPENAI_API_KEY (optional, only if testing cloud inference)
 
 # 3. Launch the complete containerized stack
 docker compose up -d --build
+
+# 4. (Optional / Manual) Instant Database Seed & Restore (~5 seconds, $0.00 spend)
+# Note: On first startup, Docker automatically seeds the archive via /docker-entrypoint-initdb.d.
+# To manually verify or re-seed all 272 episodes and 7,588 chunks at any time:
+./scripts/restore_db.sh
 ```
 
 ### Verified Access Points
@@ -216,6 +221,11 @@ lenny-growth-assistant/
 ├── render.yaml                      # Render Blueprint Infrastructure-as-Code
 ├── README.md                        # Master project documentation
 ├── alembic.ini                      # Database migration configuration
+├── scripts/                         # Instant database restore & container init scripts
+│   ├── restore_db.sh                # 5-second database restore (272 episodes, 7,588 chunks)
+│   └── init_db.sh                   # Docker entrypoint automatic seed runner
+├── data/
+│   └── db_dump/                     # Pre-computed PostgreSQL pgvector seed chunks (<35MB parts)
 ├── agent_transcripts/               # Sanitized coding-agent case studies (Phases 1–10)
 │   ├── 01_scaffolding_and_schema_foundation.md
 │   ├── 02_ingestion_and_retrieval_evaluation.md
@@ -227,7 +237,6 @@ lenny-growth-assistant/
 │   ├── architecture.md              # System Architecture Specification
 │   ├── design.md                    # UI/UX Design Specification
 │   ├── deployment.md                # Cloud & local operational deployment guide
-│   ├── demo_narrative.md            # 2–3 minute video presentation script & checklist
 │   ├── implementation-contract.md   # Architectural binding specification
 │   └── ollama_benchmark.md          # CPU benchmark results & methodology
 ├── backend/                         # FastAPI Public Backend
