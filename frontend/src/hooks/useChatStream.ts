@@ -70,9 +70,11 @@ export function useChatStream({
         model?: string;
         mode?: ChatMode;
         mock_mode?: boolean;
+        sessionId?: string;
       } = {}
     ) => {
-      if (!sessionId) {
+      const effectiveSessionId = options.sessionId || sessionId;
+      if (!effectiveSessionId) {
         setError("No active session selected.");
         return;
       }
@@ -95,7 +97,7 @@ export function useChatStream({
       doneMetaRef.current = {};
 
       const payload: ChatRequestPayload = {
-        session_id: sessionId,
+        session_id: effectiveSessionId,
         message: userQuery,
         provider: options.provider || "openai",
         model: options.model,

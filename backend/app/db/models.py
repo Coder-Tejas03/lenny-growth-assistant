@@ -185,6 +185,9 @@ class Episode(Base):
     """Source podcast episode metadata for provenance and citation rendering."""
 
     __tablename__ = "episodes"
+    __table_args__ = (
+        UniqueConstraint("title", name="uq_episodes_title"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),

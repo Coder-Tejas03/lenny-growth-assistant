@@ -108,6 +108,21 @@ async function runSkillTests(): Promise<void> {
   assert.ok(ship30Events.some((e) => e.event === "done"));
   console.log("  ✔ Ship 30 Writer verified");
 
+  // 3b. Test Ship 30 Writer with weak/empty evidence -> Abstention & zero artifacts
+  console.log("  • Testing Ship 30 Writer (weak evidence -> abstention)...");
+  const ship30AbstainEvents: any[] = [];
+  for await (const ev of executeSkillStream({
+    skill: "ship30_writer",
+    query: "How to bake sourdough bread",
+    evidence: weakEvidence,
+    provider: "openai",
+    mock_mode: true,
+  })) {
+    ship30AbstainEvents.push(ev);
+  }
+  assert.ok(!ship30AbstainEvents.some((e) => e.event === "artifact"), "Must NOT emit artifact on weak evidence");
+  console.log("  ✔ Ship 30 Writer boundary abstention verified");
+
   // 4. Test Artifact Generator
   console.log("  • Testing Artifact Generator skill...");
   const artifactEvents: any[] = [];
@@ -126,6 +141,21 @@ async function runSkillTests(): Promise<void> {
   assert.ok(artEvent && (artEvent.data as any).type === "html");
   assert.ok(typeof (artEvent.data as any).id === "string" && (artEvent.data as any).id.length > 0);
   console.log("  ✔ Artifact Generator verified");
+
+  // 4b. Test Artifact Generator with weak/empty evidence -> Abstention & zero artifacts
+  console.log("  • Testing Artifact Generator (weak evidence -> abstention)...");
+  const artifactAbstainEvents: any[] = [];
+  for await (const ev of executeSkillStream({
+    skill: "artifact_generator",
+    query: "How to bake sourdough bread",
+    evidence: weakEvidence,
+    provider: "openai",
+    mock_mode: true,
+  })) {
+    artifactAbstainEvents.push(ev);
+  }
+  assert.ok(!artifactAbstainEvents.some((e) => e.event === "artifact"), "Must NOT emit artifact on weak evidence");
+  console.log("  ✔ Artifact Generator boundary abstention verified");
 
   console.log("🎉 ALL AGENT SKILLS & STREAMING TESTS PASSED!");
 }

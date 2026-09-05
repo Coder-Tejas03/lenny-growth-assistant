@@ -110,6 +110,7 @@ export default function Home() {
       provider: selectedProvider,
       model: selectedModel,
       mode: mode,
+      sessionId: targetSessionId,
     });
   };
 
@@ -135,7 +136,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-surface-950 text-slate-100">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-canvas text-content">
       {/* Top Application Header */}
       <Header
         selectedProvider={selectedProvider}
@@ -177,11 +178,11 @@ export default function Home() {
         {isSidebarOpen && (
           <div className="fixed inset-0 z-40 md:hidden flex">
             <div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+              className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
               onClick={() => setIsSidebarOpen(false)}
               aria-hidden="true"
             />
-            <div className="relative z-50 flex-1 max-w-xs w-full bg-surface-950 h-full shadow-2xl animate-fade-in">
+            <div className="relative z-50 flex-1 max-w-xs w-full bg-surface h-full shadow-2xl animate-fade-in border-r border-border">
               <SessionList
                 sessions={sessions}
                 activeSessionId={activeSessionId}
@@ -193,6 +194,7 @@ export default function Home() {
                 onRenameSession={renameSession}
                 onDeleteSession={deleteSession}
                 onRetry={refreshSessions}
+                onCloseMobile={() => setIsSidebarOpen(false)}
                 className="w-full"
               />
             </div>
@@ -227,7 +229,7 @@ export default function Home() {
 
         {/* Desktop Artifact Workspace Pane (Side-by-Side Dual-Pane) */}
         {activeArtifact && (
-          <div className="hidden md:flex md:w-1/2 lg:w-2/5 h-full border-l border-surface-800 transition-all duration-300 animate-fade-in">
+          <div className="hidden md:flex md:w-1/2 lg:w-2/5 h-full border-l border-border transition-all duration-300 animate-fade-in">
             <ArtifactViewer
               artifact={activeArtifact}
               onClose={() => setActiveArtifact(null)}
@@ -238,7 +240,7 @@ export default function Home() {
 
         {/* Mobile Artifact Workspace Drawer (Full Screen / Slide-over) */}
         {activeArtifact && (
-          <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-surface-950 animate-fade-in">
+          <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-canvas animate-fade-in">
             <ArtifactViewer
               artifact={activeArtifact}
               onClose={() => setActiveArtifact(null)}

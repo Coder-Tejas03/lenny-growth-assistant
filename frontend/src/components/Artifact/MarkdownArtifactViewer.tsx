@@ -1,10 +1,10 @@
 /**
  * Lenny Growth Assistant — Markdown Artifact Viewer Component
  *
- * Renders long-form markdown artifacts (such as Ship 30 essays or frameworks):
- * - Rich typography with custom styled headers, blockquotes, and bold anchors
- * - Tables and code formatting via remark-gfm
- * - Visual reading layout optimized for deep editorial content
+ * Editorial Deliverable Document Presentation:
+ * - Rich typography for long-form reading (Ship 30 essays, playbooks, frameworks)
+ * - Warm paper sheet on desk appearance in both light and dark modes
+ * - Tables and syntax highlighting via remark-gfm
  */
 
 "use client";
@@ -24,60 +24,60 @@ export function MarkdownArtifactViewer({
 }: MarkdownArtifactViewerProps) {
   return (
     <div
-      className={`h-full w-full overflow-y-auto p-6 bg-surface-900/90 text-slate-100 rounded-lg border border-surface-800 ${className}`}
+      className={`h-full w-full overflow-y-auto p-4 sm:p-6 bg-canvas ${className}`}
     >
-      <div className="max-w-3xl mx-auto prose-custom text-sm leading-relaxed space-y-4">
+      <div className="max-w-3xl mx-auto bg-surface rounded-xl border border-border p-6 sm:p-10 shadow-xs prose-editorial text-xs sm:text-sm leading-relaxed space-y-4">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => (
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white pb-3 border-b border-surface-700/80 mb-4 mt-2">
+              <h1 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-content pb-3 border-b border-border mb-5 mt-2">
                 {children}
               </h1>
             ),
             h2: ({ children }) => (
-              <h2 className="text-base sm:text-lg font-bold text-brand-300 mt-6 mb-3 pt-2 border-t border-surface-800/60">
+              <h2 className="text-base sm:text-lg font-serif font-bold text-signal mt-7 mb-3 pt-3 border-t border-border">
                 {children}
               </h2>
             ),
             h3: ({ children }) => (
-              <h3 className="text-sm sm:text-base font-semibold text-slate-200 mt-4 mb-2">
+              <h3 className="text-sm sm:text-base font-serif font-semibold text-content mt-5 mb-2">
                 {children}
               </h3>
             ),
             p: ({ children }) => (
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-3">
+              <p className="text-content text-xs sm:text-sm leading-relaxed mb-4">
                 {children}
               </p>
             ),
             ul: ({ children }) => (
-              <ul className="list-disc pl-5 space-y-2 text-slate-300 text-xs sm:text-sm my-3">
+              <ul className="list-disc pl-5 space-y-2 text-content text-xs sm:text-sm my-3">
                 {children}
               </ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal pl-5 space-y-2 text-slate-300 text-xs sm:text-sm my-3">
+              <ol className="list-decimal pl-5 space-y-2 text-content text-xs sm:text-sm my-3">
                 {children}
               </ol>
             ),
             li: ({ children }) => (
-              <li className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              <li className="text-content text-xs sm:text-sm leading-relaxed">
                 {children}
               </li>
             ),
             blockquote: ({ children }) => (
-              <blockquote className="border-l-4 border-brand-500 pl-4 py-1 italic bg-surface-800/40 rounded-r text-slate-300 text-xs sm:text-sm my-4">
+              <blockquote className="border-l-3 border-signal pl-4 py-2 italic bg-surface-hover/60 rounded-r text-content-muted text-xs sm:text-sm my-4">
                 {children}
               </blockquote>
             ),
             code: ({ children, className }) => {
               const isInline = !className;
               return isInline ? (
-                <code className="px-1.5 py-0.5 rounded bg-surface-800 font-mono text-[11px] text-brand-300 border border-surface-700/50">
+                <code className="px-1.5 py-0.5 rounded bg-surface-raised font-mono text-[11px] text-evidence border border-border">
                   {children}
                 </code>
               ) : (
-                <pre className="p-3 rounded-lg bg-surface-950 font-mono text-xs text-slate-200 overflow-x-auto border border-surface-800 my-3">
+                <pre className="p-4 rounded-xl bg-surface-raised font-mono text-xs text-content overflow-x-auto border border-border my-4 shadow-xs">
                   <code>{children}</code>
                 </pre>
               );

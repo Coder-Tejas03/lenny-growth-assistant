@@ -245,7 +245,7 @@ async def main_cli():
     parser.add_argument(
         "--mock-embeddings",
         action="store_true",
-        default=True,
+        default=False,
         help="Use deterministic mock embeddings (zero cost)",
     )
     args = parser.parse_args()

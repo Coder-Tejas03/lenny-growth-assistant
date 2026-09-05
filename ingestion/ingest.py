@@ -153,17 +153,20 @@ class IngestionPipeline:
         total_stats = IngestionStats()
         start_time = time.perf_counter()
 
-        for file_path in files:
-            logger.info(f"Ingesting {file_path.name}...")
-            file_stats = await self.ingest_file(file_path)
-
-            total_stats.episodes_processed += file_stats.episodes_processed
-            total_stats.episodes_created += file_stats.episodes_created
-            total_stats.chunks_processed += file_stats.chunks_processed
-            total_stats.chunks_created += file_stats.chunks_created
-            total_stats.chunks_skipped += file_stats.chunks_skipped
-            total_stats.tokens_embedded += file_stats.tokens_embedded
-            total_stats.cost_usd += file_stats.cost_usd
+        for idx, file_path in enumerate(files, start=1):
+            episode_label = file_path.parent.name if file_path.parent.name != "episodes" else file_path.name
+            logger.info(f"[{idx}/{len(files)}] Ingesting episode '{episode_label}'...")
+            try:
+                file_stats = await self.ingest_file(file_path)
+                total_stats.episodes_processed += file_stats.episodes_processed
+                total_stats.episodes_created += file_stats.episodes_created
+                total_stats.chunks_processed += file_stats.chunks_processed
+                total_stats.chunks_created += file_stats.chunks_created
+                total_stats.chunks_skipped += file_stats.chunks_skipped
+                total_stats.tokens_embedded += file_stats.tokens_embedded
+                total_stats.cost_usd += file_stats.cost_usd
+            except Exception as exc:
+                logger.error(f"Error ingesting episode '{episode_label}' ({file_path}): {exc}", exc_info=True)
 
         total_stats.duration_seconds = time.perf_counter() - start_time
         return total_stats

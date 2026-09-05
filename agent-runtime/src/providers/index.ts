@@ -41,7 +41,11 @@ export class MockNodeProvider implements NodeLLMProvider {
       "Lenny's guests emphasize continuous user feedback, disciplined retention metrics, " +
       "and focused product execution [Episode: Rahul Vohra on PMF, 14:22].";
 
-    if (messages.some((m) => m.content.includes("Ship 30"))) {
+    if (messages.some((m) => m.content.includes("No matching podcast transcript evidence") || m.content.includes("beef bourguignon"))) {
+      mockResponse =
+        "I couldn't find sufficient evidence in Lenny's podcast archive to answer this reliably. " +
+        "Try asking about a product or growth topic covered in the podcast transcripts.";
+    } else if (messages.some((m) => m.content.includes("Ship 30"))) {
       mockResponse = `# Why Most Growth Initiatives Fail (And What Elite Teams Do Instead)
 
 Most startup teams obsess over top-of-funnel acquisition when their product is secretly bleeding users through the floorboards.
@@ -217,15 +221,21 @@ export class OpenAINodeProvider implements NodeLLMProvider {
     const decoder = new TextDecoder();
     let promptTokens = 0;
     let completionTokens = 0;
+    let buffer = "";
 
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n").filter((l) => l.trim().startsWith("data: "));
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        // Keep incomplete trailing line fragment in buffer
+        buffer = lines.pop() ?? "";
+
         for (const line of lines) {
-          const raw = line.replace(/^data:\s*/, "").trim();
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith("data: ")) continue;
+          const raw = trimmed.replace(/^data:\s*/, "").trim();
           if (raw === "[DONE]") break;
           try {
             const parsed = JSON.parse(raw);
@@ -235,7 +245,24 @@ export class OpenAINodeProvider implements NodeLLMProvider {
               yield delta;
             }
           } catch {
-            // Ignore parse errors on partial chunks
+            // Ignore parse errors on malformed lines
+          }
+        }
+      }
+
+      // Process any remaining complete line in buffer when stream ends
+      if (buffer.trim().startsWith("data: ")) {
+        const raw = buffer.trim().replace(/^data:\s*/, "").trim();
+        if (raw !== "[DONE]") {
+          try {
+            const parsed = JSON.parse(raw);
+            const delta = parsed.choices?.[0]?.delta?.content;
+            if (delta) {
+              completionTokens++;
+              yield delta;
+            }
+          } catch {
+            // Ignore
           }
         }
       }
@@ -308,16 +335,22 @@ export class OllamaNodeProvider implements NodeLLMProvider {
     const decoder = new TextDecoder();
     let promptTokens = 0;
     let completionTokens = 0;
+    let buffer = "";
 
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n").filter((l) => l.trim().length > 0);
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        // Keep incomplete trailing line fragment in buffer
+        buffer = lines.pop() ?? "";
+
         for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
           try {
-            const parsed = JSON.parse(line);
+            const parsed = JSON.parse(trimmed);
             if (parsed.prompt_eval_count) promptTokens = parsed.prompt_eval_count;
             if (parsed.eval_count) completionTokens = parsed.eval_count;
             const content = parsed.message?.content;
@@ -325,6 +358,19 @@ export class OllamaNodeProvider implements NodeLLMProvider {
           } catch {
             // Ignore parse errors on partial lines
           }
+        }
+      }
+
+      // Process any remaining complete line in buffer when stream ends
+      if (buffer.trim()) {
+        try {
+          const parsed = JSON.parse(buffer.trim());
+          if (parsed.prompt_eval_count) promptTokens = parsed.prompt_eval_count;
+          if (parsed.eval_count) completionTokens = parsed.eval_count;
+          const content = parsed.message?.content;
+          if (content) yield content;
+        } catch {
+          // Ignore
         }
       }
     } finally {

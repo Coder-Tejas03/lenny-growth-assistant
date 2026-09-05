@@ -8,6 +8,7 @@
 import { randomUUID } from "node:crypto";
 import { ArtifactPayload, Citation, EvidenceChunk, StreamEvent } from "../types.js";
 import { NodeLLMProvider } from "../providers/index.js";
+import { NAVIGATOR_SYSTEM_PROMPT } from "./grounded_qa.js";
 
 export const ARTIFACT_SYSTEM_PROMPT = `
 You are an expert product systems designer and technical documentation specialist.
@@ -43,7 +44,55 @@ export async function* runArtifactGenerator(
     data: { stage: "retrieving", message: "Reviewing specifications for artifact generation..." },
   };
 
-  const citations: Citation[] = req.evidence.map((e) => ({
+  // 1. Boundary check: filter to sufficient evidence (similarity >= 0.45)
+  const sufficientEvidence = req.evidence.filter((e) => e.similarity >= 0.45);
+
+  if (sufficientEvidence.length === 0) {
+    yield {
+      event: "status",
+      data: { stage: "generating", message: "Finding related topics to guide you..." },
+    };
+
+    const navigatorMessages = [
+      ...(req.conversationHistory || []),
+      {
+        role: "user" as const,
+        content: `The user requested an artifact for: "${req.query}"\n\nNo matching podcast transcript evidence was found in Lenny's archive. Please explain warmly that you can only generate artifacts grounded in Lenny's archive, describe what topics the archive covers, and suggest 3-4 specific product/growth artifacts they could generate instead (e.g., A Product-Market Fit Survey Rubric, An Onboarding Growth Loop Diagram, A B2B SaaS Churn Diagnostic Matrix). Do NOT output an <artifact> block.`,
+      },
+    ];
+
+    let fullContent = "";
+    try {
+      for await (const token of req.provider.stream(
+        [{ role: "system", content: NAVIGATOR_SYSTEM_PROMPT }, ...navigatorMessages],
+        { temperature: 0.4, maxTokens: 450 }
+      )) {
+        fullContent += token;
+        yield {
+          event: "token",
+          data: { delta: token },
+        };
+      }
+    } catch (_err) {
+      const fallback =
+        "I don't have information on that topic in Lenny's podcast archive to generate an artifact. " +
+        "Here are some great product and growth artifacts I can generate for you:\n\n" +
+        "- **A Product-Market Fit Survey Rubric** (based on Sean Ellis & Superhuman)\n" +
+        "- **A Product-Led vs. Sales-Led Comparison Card** (based on Elena Verna)\n" +
+        "- **A Retention Cohort Diagnostic Matrix** (based on Casey Winters & Brian Balfour)\n" +
+        "- **An Early-Stage Experimentation Roadmap** (based on Albert Cheng)\n\n" +
+        "Feel free to ask for any of these artifacts!";
+      yield { event: "token", data: { delta: fallback } };
+      fullContent = fallback;
+    }
+
+    return {
+      content: fullContent,
+      citations: [],
+    };
+  }
+
+  const citations: Citation[] = sufficientEvidence.map((e) => ({
     chunk_id: e.chunk_id,
     episode_title: e.episode_title,
     guest_name: e.guest_name,
@@ -58,9 +107,10 @@ export async function* runArtifactGenerator(
     data: { stage: "generating", message: "Designing structured artifact and component styles..." },
   };
 
-  const contextBlock = req.evidence.length > 0
-    ? req.evidence.map((e) => `[Source: ${e.episode_title} / ${e.guest_name}]\n${e.content}`).join("\n\n")
-    : "General Lenny Podcast Knowledge";
+  const contextBlock = sufficientEvidence
+    .map((e) => `[Source: ${e.episode_title} / ${e.guest_name}]\n${e.content}`)
+    .join("\n\n");
+
 
   const prompt = `${ARTIFACT_SYSTEM_PROMPT}\n\n## Context Material:\n${contextBlock}`;
 

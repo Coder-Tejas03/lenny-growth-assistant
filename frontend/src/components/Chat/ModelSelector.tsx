@@ -1,14 +1,16 @@
 /**
  * Lenny Growth Assistant — Model / Provider Selector Component
  *
- * Provides a visible control to toggle between Cloud (OpenAI) and Local (Ollama)
- * per Section 9 of design.md and Section 9 of docs/implementation-contract.md.
- * Ensures zero silent fallback: selected provider and model are always explicit.
+ * Editorial Signal Desk Inference Selector:
+ * - Clear distinction between Cloud (OpenAI) and Local (Ollama)
+ * - Zero silent fallback: selected provider and model are always explicit
+ * - Hardware upgrade path (7B / 8B via OLLAMA_MODEL) documented
+ * - Accessible popover with keyboard Escape-to-close handling
  */
 
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Cloud, Cpu, ChevronDown } from "lucide-react";
 import { ChatProvider } from "../../types/chat";
 
@@ -53,7 +55,8 @@ export function ModelSelector({
   onSelect,
   disabled = false,
 }: ModelSelectorProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const activeOption =
     MODEL_OPTIONS.find(
@@ -69,13 +72,23 @@ export function ModelSelector({
       ? `${activeOption.provider === "ollama" ? "Ollama" : "OpenAI"} ${selectedModel}`
       : activeOption.name;
 
+  // Handle Escape key and outside clicks
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   const handleSelect = (option: ModelOption) => {
     onSelect(option.provider, option.model);
     setIsOpen(false);
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div className="relative inline-block text-left" ref={containerRef}>
       <button
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
@@ -83,28 +96,30 @@ export function ModelSelector({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label="Select AI Model Provider"
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+        className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-medium transition-all shadow-xs ${
           activeOption.isLocal
-            ? "bg-purple-950/40 border-purple-800/60 text-purple-200 hover:bg-purple-900/50"
-            : "bg-emerald-950/40 border-emerald-800/60 text-emerald-200 hover:bg-emerald-900/50"
-        } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+            ? "bg-purple-950/10 dark:bg-purple-950/30 border-purple-300 dark:border-purple-800 text-purple-800 dark:text-purple-200 hover:bg-purple-950/20"
+            : "bg-surface-raised border-border text-content hover:bg-surface-hover"
+        } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal`}
       >
         {activeOption.isLocal ? (
-          <Cpu className="w-3.5 h-3.5 text-purple-400" />
+          <Cpu className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
         ) : (
-          <Cloud className="w-3.5 h-3.5 text-emerald-400" />
+          <Cloud className="w-3.5 h-3.5 text-evidence shrink-0" />
         )}
-        <span className="font-semibold">{displayName}</span>
+        <span className="font-semibold truncate max-w-[120px] sm:max-w-[160px]">
+          {displayName}
+        </span>
         <span
-          className={`px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
+          className={`px-1.5 py-0.2 rounded text-[10px] font-mono uppercase tracking-wider ${
             activeOption.isLocal
-              ? "bg-purple-900/80 text-purple-300"
-              : "bg-emerald-900/80 text-emerald-300"
+              ? "bg-purple-200 dark:bg-purple-900 text-purple-900 dark:text-purple-200"
+              : "bg-surface-hover text-content-muted"
           }`}
         >
           {activeOption.isLocal ? "Local" : "Cloud"}
         </span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3.5 h-3.5 text-content-subtle transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
@@ -116,12 +131,12 @@ export function ModelSelector({
           />
           <div
             role="listbox"
-            className="absolute right-0 mt-2 w-72 rounded-xl bg-surface-900 border border-surface-700 shadow-2xl z-30 overflow-hidden animate-slide-up"
+            className="absolute right-0 mt-2 w-72 sm:w-80 rounded-xl bg-surface-raised border border-border shadow-xl z-30 overflow-hidden animate-slide-up"
           >
-            <div className="p-2 border-b border-surface-800 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <div className="p-2.5 border-b border-border text-[11px] font-mono uppercase tracking-wider text-content-subtle">
               Select Inference Provider
             </div>
-            <div className="p-1 space-y-1">
+            <div className="p-1.5 space-y-1">
               {MODEL_OPTIONS.map((opt) => {
                 const isSelected =
                   opt.provider === selectedProvider &&
@@ -134,49 +149,51 @@ export function ModelSelector({
                     role="option"
                     aria-selected={isSelected}
                     onClick={() => handleSelect(opt)}
-                    className={`w-full text-left p-2.5 rounded-lg flex flex-col gap-1 transition-colors ${
+                    className={`w-full text-left p-2.5 rounded-lg flex flex-col gap-1 transition-all border ${
                       isSelected
-                        ? "bg-surface-800 text-white"
-                        : "hover:bg-surface-800/60 text-slate-300"
+                        ? "bg-surface border-signal/60 text-content shadow-xs"
+                        : "border-transparent hover:bg-surface-hover text-content-muted hover:text-content"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {opt.isLocal ? (
-                          <Cpu className="w-4 h-4 text-purple-400" />
+                          <Cpu className="w-4 h-4 text-purple-500" />
                         ) : (
-                          <Cloud className="w-4 h-4 text-emerald-400" />
+                          <Cloud className="w-4 h-4 text-evidence" />
                         )}
-                        <span className="text-xs font-semibold">{opt.name}</span>
+                        <span className="text-xs font-semibold text-content">{opt.name}</span>
                       </div>
                       <span
-                        className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                        className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-medium ${
                           opt.isLocal
-                            ? "bg-purple-900/50 text-purple-300 border border-purple-700/50"
-                            : "bg-emerald-900/50 text-emerald-300 border border-emerald-700/50"
+                            ? "bg-purple-950/20 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800"
+                            : "bg-surface-hover text-content-muted border border-border"
                         }`}
                       >
                         {opt.badge}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-400 leading-tight">
+                    <p className="text-[11px] text-content-muted leading-relaxed">
                       {opt.description}
                     </p>
                   </button>
                 );
               })}
             </div>
-            <div className="p-2.5 bg-surface-950/70 border-t border-surface-800 text-[10px] text-slate-400 space-y-1">
-              <div className="flex items-center justify-between text-slate-300 font-medium">
+
+            {/* Hardware Upgrade Disclosure Section */}
+            <div className="p-2.5 bg-surface border-t border-border text-[10px] text-content-muted space-y-1.5">
+              <div className="flex items-center justify-between font-medium text-content">
                 <span>Hardware Upgrade Path</span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-surface-800 text-purple-300 border border-purple-800/50 font-mono">
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-surface-raised text-content-muted border border-border font-mono">
                   7B / 8B
                 </span>
               </div>
-              <p className="text-slate-500 leading-tight">
+              <p className="text-content-subtle leading-normal">
                 Swap to larger local models (e.g. llama3.1:8b) via OLLAMA_MODEL in .env on machines with ≥16GB RAM.
               </p>
-              <div className="text-[10px] text-brand-400/90 pt-0.5 font-medium">
+              <div className="text-[10px] text-signal pt-0.5 font-medium">
                 Provider selection is explicit. Never switches silently.
               </div>
             </div>

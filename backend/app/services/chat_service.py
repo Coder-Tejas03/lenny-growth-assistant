@@ -26,6 +26,7 @@ from app.services.artifact_service import ArtifactService
 from app.providers.base import BudgetExceededError, ProviderUnavailableError
 from app.providers.openai_provider import OpenAIProvider
 from app.retrieval.models import Citation, EvidenceChunk
+from app.retrieval.query_rewriter import QueryRewriter
 from app.retrieval.retriever import TranscriptRetriever
 from app.schemas.chat import ChatMode, ChatRequest, format_sse, format_sse_done
 from app.schemas.error import (
@@ -47,6 +48,7 @@ class ChatService:
         db: AsyncSession,
         retriever: Optional[TranscriptRetriever] = None,
         agent_client: Optional[PiAgentClient] = None,
+        query_rewriter: Optional[QueryRewriter] = None,
     ):
         self.db = db
         self.session_repo = SessionRepository(db)
@@ -54,6 +56,7 @@ class ChatService:
         self.artifact_repo = ArtifactRepository(db)
         self.retriever = retriever or TranscriptRetriever(db)
         self.agent_client = agent_client or PiAgentClient()
+        self.query_rewriter = query_rewriter or QueryRewriter()
 
     async def stream_chat(
         self, request: ChatRequest
@@ -145,9 +148,15 @@ class ChatService:
                 {"stage": "retrieving", "message": "Searching transcript archive..."},
             )
 
+            # 5b. Contextualize query for multi-turn conversational follow-ups
+            search_query = await self.query_rewriter.rewrite_if_needed(
+                query=request.message,
+                conversation_history=conversation_history,
+            )
+
             # 6. Execute grounded retrieval
             retrieval_result = await self.retriever.retrieve(
-                query=request.message,
+                query=search_query,
                 top_k=settings.RETRIEVAL_TOP_K,
                 similarity_threshold=settings.RETRIEVAL_SIMILARITY_THRESHOLD,
             )
@@ -168,7 +177,7 @@ class ChatService:
             # 7. Construct Agent payload
             payload = AgentRequestPayload(
                 skill=skill,
-                query=request.message,
+                query=search_query,
                 evidence=retrieved_evidence,
                 conversation_history=conversation_history,
                 provider=request.provider,

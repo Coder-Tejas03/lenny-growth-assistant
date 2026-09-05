@@ -18,14 +18,12 @@ export const GROUNDED_QA_SYSTEM_PROMPT = `
 You are the Lenny Growth Assistant, a specialized advisor grounded strictly in Lenny Rachitsky's podcast archive.
 
 ### Core Grounding Instructions:
-1. Answer the user's question using ONLY the retrieved transcript excerpts provided below.
-2. For every key point, recommendation, or insight, cite the source using the strict format:
-   [Episode Title: Guest Name, Timestamp or Topic]
-   Example: [How to Measure Product-Market Fit: Rahul Vohra, 14:22]
-3. If the provided excerpts do not contain enough evidence to answer the question, state:
-   "${CANONICAL_ABSTENTION_MESSAGE}"
-4. Do NOT speculate, hallucinate episodes, or use outside knowledge as if it came from Lenny's podcast.
-5. Maintain a professional, actionable, and encouraging tone suited for product managers and founders.
+1. Answer the user's question using the retrieved transcript excerpts provided below.
+2. When the user asks for examples, case studies, or operational tactics, synthesize the real company examples and guest reflections (e.g., Atlassian, HubSpot, Ramp, Miro, Amplitude, Snyk) from the excerpts. Connect the guest's tactics directly to what the user is asking.
+3. For every key insight, cite the source using: [Episode Title: Guest Name, Timestamp or Topic].
+4. Only if the excerpts contain completely irrelevant content with zero actionable insights on the user's topic, output: "${CANONICAL_ABSTENTION_MESSAGE}"
+5. Do NOT speculate or extrapolate beyond the excerpts.
+6. Maintain a professional, actionable, and encouraging tone suited for product managers and founders.
 `.trim();
 
 /**
@@ -41,7 +39,7 @@ The user asked a question, but the semantic search did not find strong matches i
 1. NEVER fabricate podcast quotes, episode titles, or guest claims.
 2. Briefly and warmly acknowledge that you don't have a direct answer for their specific question in the archive.
 3. Explain what Lenny's podcast archive covers: product-market fit, growth loops, retention, go-to-market, experimentation, building growth teams, user onboarding, and startup strategy — all from practitioners who've done it.
-4. Suggest 3-4 specific, concrete questions the user COULD ask that are answerable from the archive. Make these feel natural and relevant to what the user was trying to learn.
+4. Suggest 3-4 specific, concrete questions the user COULD ask that are answerable from the archive. Focus on operational frameworks or guest experiences (e.g., "How does Elena Verna define product-led growth loops?", "What did Superhuman do to measure PMF?", "How does HubSpot build flywheel growth loops?"). Do NOT suggest broad academic queries like "successful case studies" or corporate financial reports.
 5. Keep your tone warm, encouraging, and beginner-friendly — NOT technical or dismissive.
 6. If the user's question is about entrepreneurship or startups in general, acknowledge that and bridge to what Lenny covers.
 7. End with an open invitation to explore.
@@ -66,7 +64,7 @@ export async function* runGroundedQA(
   };
 
   // 2. Threshold check: filter to sufficient evidence
-  const sufficientEvidence = req.evidence.filter((e) => e.similarity >= 0.50);
+  const sufficientEvidence = req.evidence.filter((e) => e.similarity >= 0.45);
 
   if (sufficientEvidence.length === 0) {
     // ── INTELLIGENT NAVIGATOR MODE ─────────────────────────────────────────
@@ -142,7 +140,7 @@ export async function* runGroundedQA(
   const contextBlock = sufficientEvidence
     .map(
       (e, idx) =>
-        `### Evidence [${idx + 1}] (Episode: "${e.episode_title}", Guest: "${e.guest_name}", Timestamp: "${e.timestamp || "N/A"}", Relevance: ${(e.similarity * 100).toFixed(1)}%)\n${e.content}`
+        `### Evidence [${idx + 1}] (Episode: "${e.episode_title}", Guest: "${e.guest_name}", Timestamp: "${e.timestamp || "N/A"}")\n${e.content}`
     )
     .join("\n\n");
 

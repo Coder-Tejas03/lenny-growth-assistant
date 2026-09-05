@@ -232,6 +232,36 @@ class PiAgentClient:
 
         # 2. Ship 30 Writer Skill
         elif payload.skill == AgentSkill.SHIP30_WRITER:
+            if not payload.evidence:
+                yield StreamEventModel(
+                    event="status",
+                    data={"stage": "generating", "message": "Finding related topics to guide you..."},
+                )
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f'The user requested a Ship 30 essay on: "{payload.query}"\n\nNo matching podcast transcript evidence was found in Lenny\'s archive. Please explain warmly that Ship 30 essays must be grounded in Lenny\'s podcast transcripts, describe what topics the archive covers, and suggest 3-4 specific product/growth essay topics they could request instead. Do NOT output an ungrounded essay.',
+                    }
+                ]
+                async for token in provider.stream_chat(messages, system_prompt=NAVIGATOR_SYSTEM_PROMPT):
+                    yield StreamEventModel(event="token", data={"delta": token})
+
+                meta = provider.get_last_metadata()
+                yield StreamEventModel(
+                    event="done",
+                    data={
+                        "provider": provider.provider_name,
+                        "model": provider.model_name,
+                        "tokens": {
+                            "prompt": meta.prompt_tokens if meta else 0,
+                            "completion": meta.completion_tokens if meta else 0,
+                            "total": meta.total_tokens if meta else 0,
+                        },
+                        "cost_usd": meta.cost_usd if meta else 0.0,
+                    },
+                )
+                return
+
             yield StreamEventModel(
                 event="status",
                 data={"stage": "retrieving", "message": "Curating evidence for Ship 30 essay..."},
@@ -326,6 +356,36 @@ class PiAgentClient:
 
         # 3. Artifact Generator Skill
         elif payload.skill == AgentSkill.ARTIFACT_GENERATOR:
+            if not payload.evidence:
+                yield StreamEventModel(
+                    event="status",
+                    data={"stage": "generating", "message": "Finding related topics to guide you..."},
+                )
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f'The user requested an artifact for: "{payload.query}"\n\nNo matching podcast transcript evidence was found in Lenny\'s archive. Please explain warmly that you can only generate artifacts grounded in Lenny\'s archive, describe what topics the archive covers, and suggest 3-4 specific product/growth artifacts they could generate instead. Do NOT output an <artifact> block.',
+                    }
+                ]
+                async for token in provider.stream_chat(messages, system_prompt=NAVIGATOR_SYSTEM_PROMPT):
+                    yield StreamEventModel(event="token", data={"delta": token})
+
+                meta = provider.get_last_metadata()
+                yield StreamEventModel(
+                    event="done",
+                    data={
+                        "provider": provider.provider_name,
+                        "model": provider.model_name,
+                        "tokens": {
+                            "prompt": meta.prompt_tokens if meta else 0,
+                            "completion": meta.completion_tokens if meta else 0,
+                            "total": meta.total_tokens if meta else 0,
+                        },
+                        "cost_usd": meta.cost_usd if meta else 0.0,
+                    },
+                )
+                return
+
             yield StreamEventModel(
                 event="status",
                 data={"stage": "generating", "message": "Designing structured artifact and component styles..."},

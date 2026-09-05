@@ -9,6 +9,7 @@
 import { randomUUID } from "node:crypto";
 import { ArtifactPayload, Citation, EvidenceChunk, StreamEvent } from "../types.js";
 import { NodeLLMProvider } from "../providers/index.js";
+import { NAVIGATOR_SYSTEM_PROMPT } from "./grounded_qa.js";
 
 export const SHIP30_SYSTEM_PROMPT = `
 You are an expert executive ghostwriter trained in the Ship 30 for 30 methodology.
@@ -48,7 +49,55 @@ export async function* runShip30Writer(
     data: { stage: "retrieving", message: "Curating evidence for Ship 30 essay..." },
   };
 
-  const citations: Citation[] = req.evidence.map((e) => ({
+  // 1. Boundary check: filter to sufficient evidence (similarity >= 0.45)
+  const sufficientEvidence = req.evidence.filter((e) => e.similarity >= 0.45);
+
+  if (sufficientEvidence.length === 0) {
+    yield {
+      event: "status",
+      data: { stage: "generating", message: "Finding related topics to guide you..." },
+    };
+
+    const navigatorMessages = [
+      ...(req.conversationHistory || []),
+      {
+        role: "user" as const,
+        content: `The user requested a Ship 30 essay on: "${req.query}"\n\nNo matching podcast transcript evidence was found in Lenny's archive. Please explain warmly that Ship 30 essays must be grounded in Lenny's podcast transcripts, describe what topics the archive covers, and suggest 3-4 specific product/growth essay topics they could request instead (e.g., The 40% PMF Test, Compounding Growth Loops vs. Traditional Funnels, Why Most Retention Tactics Fail). Do NOT output an ungrounded essay.`,
+      },
+    ];
+
+    let fullContent = "";
+    try {
+      for await (const token of req.provider.stream(
+        [{ role: "system", content: NAVIGATOR_SYSTEM_PROMPT }, ...navigatorMessages],
+        { temperature: 0.4, maxTokens: 450 }
+      )) {
+        fullContent += token;
+        yield {
+          event: "token",
+          data: { delta: token },
+        };
+      }
+    } catch (_err) {
+      const fallback =
+        "I don't have information on that topic in Lenny's podcast archive to write a grounded Ship 30 essay. " +
+        "Here are some great product and growth topics you can explore:\n\n" +
+        "- **The 40% Product-Market Fit Test** (Sean Ellis)\n" +
+        "- **Compounding Growth Loops vs. Traditional Funnels** (Elena Verna)\n" +
+        "- **Why Most Retention Tactics Fail** (Casey Winters & Brian Balfour)\n" +
+        "- **Rapid Growth Experimentation Cadence** (Albert Cheng)\n\n" +
+        "Feel free to request an essay on any of these topics!";
+      yield { event: "token", data: { delta: fallback } };
+      fullContent = fallback;
+    }
+
+    return {
+      content: fullContent,
+      citations: [],
+    };
+  }
+
+  const citations: Citation[] = sufficientEvidence.map((e) => ({
     chunk_id: e.chunk_id,
     episode_title: e.episode_title,
     guest_name: e.guest_name,
@@ -70,14 +119,13 @@ export async function* runShip30Writer(
     data: { stage: "generating", message: "Drafting 1,250-word Ship 30 essay with hook and bold anchors..." },
   };
 
-  const contextBlock = req.evidence.length > 0
-    ? req.evidence
-        .map(
-          (e, idx) =>
-            `--- Source [${idx + 1}]: ${e.episode_title} (${e.guest_name}) ---\n${e.content}`
-        )
-        .join("\n\n")
-    : "Note: Synthesize based on core product/growth principles from Lenny's transcripts.";
+  const contextBlock = sufficientEvidence
+    .map(
+      (e, idx) =>
+        `--- Source [${idx + 1}]: ${e.episode_title} (${e.guest_name}) ---\n${e.content}`
+    )
+    .join("\n\n");
+
 
   const prompt = `${SHIP30_SYSTEM_PROMPT}\n\n## Source Transcript Material:\n${contextBlock}`;
 

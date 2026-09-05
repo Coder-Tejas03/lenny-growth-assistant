@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     # --- RAG & Retrieval Parameters ---
     RETRIEVAL_TOP_K: int = Field(default=5, description="Number of candidate chunks to retrieve")
     RETRIEVAL_SIMILARITY_THRESHOLD: float = Field(
-        default=0.50, description="Minimum cosine similarity cutoff for grounded retrieval"
+        default=0.45, description="Minimum cosine similarity cutoff for grounded retrieval"
     )
 
     # --- Security & CORS ---

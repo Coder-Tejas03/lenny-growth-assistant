@@ -1,12 +1,12 @@
 /**
  * Lenny Growth Assistant — Chat Composer Component
  *
- * Provides:
- * - Multiline auto-expanding prompt input
- * - Enter to submit / Shift+Enter for new line
- * - Skill / Mode selector (Default Q&A, Ship 30 Essay, Artifact Generator)
- * - Stop / Cancel button when streaming
- * - Accessibility keyboard controls
+ * Editorial Query Desk:
+ * - Multiline auto-expanding textarea
+ * - Enter to send / Shift+Enter for newline
+ * - Segmented mode selector rail (Grounded Q&A, Ship 30 Essay, Artifact)
+ * - Restrained tactile send button / Stop action during generation
+ * - Mobile safe-area padding
  */
 
 "use client";
@@ -38,13 +38,13 @@ export function Composer({
   const [selectedMode, setSelectedMode] = useState<ChatMode>("default");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea based on input
+  // Auto-resize textarea based on input height
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${Math.min(
         textareaRef.current.scrollHeight,
-        200
+        220
       )}px`;
     }
   }, [query]);
@@ -70,36 +70,38 @@ export function Composer({
   };
 
   return (
-    <div className="border-t border-surface-700 bg-surface-950/80 backdrop-blur-md p-3 sm:p-4">
-      <div className="max-w-3xl mx-auto space-y-2">
-        {/* Mode Selector Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-          {CHAT_MODES.map((item) => {
-            const Icon = item.icon;
-            const isSelected = selectedMode === item.mode;
-            return (
-              <button
-                key={item.mode}
-                type="button"
-                onClick={() => setSelectedMode(item.mode)}
-                disabled={isStreaming}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                  isSelected
-                    ? "bg-brand-600/30 text-brand-300 border border-brand-500/50"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-surface-800/60 border border-transparent"
-                } ${isStreaming ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-              >
-                <Icon className="w-3 h-3" />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+    <div className="border-t border-border bg-surface/90 backdrop-blur px-3 sm:px-4 pt-3 pb-3 sm:pb-4 shrink-0 select-none">
+      <div className="max-w-[740px] mx-auto space-y-2">
+        {/* Compact Segmented Mode Selector Rail */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
+          <div className="inline-flex items-center p-0.5 rounded-lg bg-surface-raised border border-border">
+            {CHAT_MODES.map((item) => {
+              const Icon = item.icon;
+              const isSelected = selectedMode === item.mode;
+              return (
+                <button
+                  key={item.mode}
+                  type="button"
+                  onClick={() => setSelectedMode(item.mode)}
+                  disabled={isStreaming}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
+                    isSelected
+                      ? "bg-surface text-content shadow-xs font-semibold border border-border"
+                      : "text-content-muted hover:text-content border border-transparent"
+                  } ${isStreaming ? "opacity-50 cursor-not-allowed" : "cursor-pointer"} focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal`}
+                >
+                  <Icon className={`w-3 h-3 ${isSelected ? "text-signal" : "text-content-subtle"}`} />
+                  <span>{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Input Box Form */}
         <form
           onSubmit={handleSubmit}
-          className="relative rounded-xl bg-surface-900 border border-surface-700 focus-within:border-brand-500/60 shadow-lg transition-all"
+          className="relative rounded-xl bg-surface-raised border border-border focus-within:border-signal focus-within:ring-1 focus-within:ring-signal/30 shadow-xs transition-all"
         >
           <textarea
             ref={textareaRef}
@@ -112,15 +114,15 @@ export function Composer({
               selectedMode === "ship30"
                 ? "What topic should I turn into a Ship 30 for 30 essay?"
                 : selectedMode === "artifact"
-                ? "Request a component or guide artifact..."
+                ? "Request a component, checklist, or guide deliverable..."
                 : "Ask a product or growth question from Lenny's transcripts..."
             }
-            className="w-full resize-none bg-transparent px-3.5 pt-3 pb-10 text-xs sm:text-sm text-slate-100 placeholder-slate-500 outline-none leading-relaxed"
+            className="w-full resize-none bg-transparent px-3.5 pt-3 pb-10 text-xs sm:text-sm text-content placeholder-content-subtle outline-none leading-relaxed select-text"
           />
 
-          <div className="absolute right-2.5 bottom-2.5 flex items-center gap-2">
-            <span className="hidden sm:inline-block text-[10px] text-slate-500 font-mono">
-              Enter ↵ to send
+          <div className="absolute right-2.5 bottom-2 flex items-center gap-2">
+            <span className="hidden sm:inline-block text-[10px] text-content-subtle font-mono">
+              Enter ↵ to send · Shift+Enter newline
             </span>
 
             {isStreaming ? (
@@ -128,17 +130,17 @@ export function Composer({
                 type="button"
                 onClick={onAbortStream}
                 aria-label="Stop generating response"
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-medium shadow transition-all"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-danger/10 hover:bg-danger/20 border border-danger/30 text-danger text-xs font-medium shadow-xs transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-danger"
               >
-                <Square className="w-3 h-3 fill-current" />
-                <span className="text-[11px]">Stop</span>
+                <Square className="w-2.5 h-2.5 fill-current" />
+                <span className="text-[11px] font-mono">Stop</span>
               </button>
             ) : (
               <button
                 type="submit"
                 disabled={!query.trim() || disabled}
                 aria-label="Send message"
-                className="w-7 h-7 rounded-lg bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:hover:bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-600/30 transition-all"
+                className="w-7 h-7 rounded-lg bg-signal hover:opacity-90 disabled:opacity-30 disabled:hover:opacity-30 text-white flex items-center justify-center shadow-xs transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal"
               >
                 <ArrowUp className="w-4 h-4" />
               </button>

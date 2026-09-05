@@ -9,6 +9,46 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        canvas: "var(--color-canvas)",
+        surface: {
+          DEFAULT: "var(--color-surface)",
+          raised: "var(--color-surface-raised)",
+          hover: "var(--color-surface-hover)",
+          active: "var(--color-surface-active)",
+          50: "#f8fafc",
+          100: "#f1f5f9",
+          200: "#e2e8f0",
+          300: "#cbd5e1",
+          700: "#334155",
+          800: "#1e293b",
+          900: "#0f172a",
+          950: "#080c14",
+        },
+        border: {
+          DEFAULT: "var(--color-border)",
+          strong: "var(--color-border-strong)",
+        },
+        signal: {
+          DEFAULT: "var(--color-signal)",
+          subtle: "var(--color-signal-subtle)",
+        },
+        evidence: {
+          DEFAULT: "var(--color-evidence)",
+          subtle: "var(--color-evidence-subtle)",
+        },
+        artifact: {
+          DEFAULT: "var(--color-artifact)",
+          subtle: "var(--color-artifact-subtle)",
+        },
+        danger: {
+          DEFAULT: "var(--color-danger)",
+          subtle: "var(--color-danger-subtle)",
+        },
+        content: {
+          DEFAULT: "var(--color-text)",
+          muted: "var(--color-text-muted)",
+          subtle: "var(--color-text-subtle)",
+        },
         brand: {
           50: "#f0fdf4",
           100: "#dcfce7",
@@ -21,16 +61,7 @@ module.exports = {
           800: "#166534",
           900: "#14532d",
           950: "#052e16",
-        },
-        surface: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          700: "#334155",
-          800: "#1e293b",
-          900: "#0f172a",
-          950: "#080c14",
+          DEFAULT: "var(--color-signal)",
         },
         accent: {
           amber: "#f59e0b",
@@ -39,8 +70,16 @@ module.exports = {
         },
       },
       fontFamily: {
+        serif: [
+          '"Newsreader"',
+          '"Charter"',
+          '"Georgia"',
+          '"Cambria"',
+          '"Times New Roman"',
+          "serif",
+        ],
         sans: [
-          "Inter",
+          '"Inter"',
           "-apple-system",
           "BlinkMacSystemFont",
           '"Segoe UI"',
@@ -56,8 +95,8 @@ module.exports = {
       },
       animation: {
         "pulse-subtle": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "fade-in": "fadeIn 0.25s ease-out forwards",
-        "slide-up": "slideUp 0.3s ease-out forwards",
+        "fade-in": "fadeIn 0.2s ease-out forwards",
+        "slide-up": "slideUp 0.2s ease-out forwards",
       },
       keyframes: {
         fadeIn: {
@@ -65,7 +104,7 @@ module.exports = {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "0%": { opacity: "0", transform: "translateY(6px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },

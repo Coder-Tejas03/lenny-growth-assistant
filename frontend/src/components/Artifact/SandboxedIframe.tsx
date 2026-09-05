@@ -41,17 +41,17 @@ export function SandboxedIframe({
   }, [content]);
 
   return (
-    <div className={`flex flex-col h-full w-full bg-white relative rounded-lg overflow-hidden border border-surface-700/60 shadow-inner ${className}`}>
+    <div className={`flex flex-col h-full w-full bg-white relative rounded-xl overflow-hidden border border-border shadow-xs ${className}`}>
       {/* Sandbox Isolation Header Indicator */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-surface-900 border-b border-surface-800 text-[11px] text-slate-300 select-none">
+      <div className="flex items-center justify-between px-3.5 py-2 bg-surface-raised border-b border-border text-[11px] text-content-muted select-none">
         <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="font-semibold text-slate-200">Sandboxed Preview</span>
-          <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">
+          <ShieldCheck className="w-3.5 h-3.5 text-signal" />
+          <span className="font-semibold text-content font-serif">Sandboxed Preview</span>
+          <span className="text-[10px] text-content-subtle font-mono hidden sm:inline">
             (Isolated Origin)
           </span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-mono bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded">
+        <div className="flex items-center gap-1 text-[10px] text-signal font-mono bg-signal/10 border border-signal/30 px-1.5 py-0.5 rounded">
           <Lock className="w-2.5 h-2.5" />
           <span>No Parent DOM Access</span>
         </div>
