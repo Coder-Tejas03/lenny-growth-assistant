@@ -1,0 +1,12 @@
+"""
+Lenny Growth Assistant — SQLAlchemy Declarative Base
+
+Defines the common DeclarativeBase for all ORM models.
+"""
+
+from sqlalchemy.orm import DeclarativeBase
+
+
+class Base(DeclarativeBase):
+    """Base class for all SQLAlchemy ORM models."""
+    pass

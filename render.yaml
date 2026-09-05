@@ -1,0 +1,45 @@
+# ==============================================================================
+# Lenny Growth Assistant — Render Blueprint (Infrastructure-as-Code)
+# ==============================================================================
+# Deploys the FastAPI Public Backend with PostgreSQL/pgvector connectivity
+# ==============================================================================
+
+services:
+  - type: web
+    name: lenny-growth-assistant-backend
+    runtime: python
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: DATABASE_URL
+        sync: false # Set to your hosted Supabase/PostgreSQL connection string
+      - key: DATABASE_URL_SYNC
+        sync: false # Synchronous connection string for Alembic migrations
+      - key: DEFAULT_LLM_PROVIDER
+        value: openai
+      - key: OPENAI_API_KEY
+        sync: false # Add your OpenAI API key in the Render dashboard
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: OPENAI_BUDGET_USD
+        value: "4.00"
+      - key: OPENAI_EMBEDDING_MODEL
+        value: text-embedding-3-small
+      - key: EMBEDDING_DIMENSION
+        value: "1536"
+      - key: RETRIEVAL_TOP_K
+        value: "5"
+      - key: RETRIEVAL_SIMILARITY_THRESHOLD
+        value: "0.65"
+      - key: CORS_ORIGINS
+        value: '["https://lenny-growth-assistant.vercel.app","http://localhost:3000"]'

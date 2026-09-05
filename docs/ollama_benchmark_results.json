@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-09-04T23:29:25Z",
+  "hardware_profile": {
+    "os": "Linux",
+    "release": "7.0.0-30-generic",
+    "machine": "x86_64",
+    "cpu_count_logical": 12,
+    "total_ram_gb": 7.48,
+    "available_ram_gb": 4.13,
+    "total_swap_gb": 4.0
+  },
+  "model": "qwen2.5:1.5b",
+  "runs": [
+    {
+      "run_label": "Cold Run (Short Prompt)",
+      "prompt": "In 2 concise sentences, define product-led growth and its core metric.",
+      "response_text": "Product-led growth is a strategy where the product is the primary focus, driving the growth of the business. Its core metric is the number of new users acquired through the product, often measured by the Net Promoter Score (NPS) or the number of active users.",
+      "total_elapsed_s": 5.178,
+      "ttft_s": 2.054,
+      "load_duration_s": 1.592,
+      "prompt_eval_duration_s": 0.444,
+      "prompt_eval_count": 36,
+      "prompt_tokens_per_sec": 81.15,
+      "eval_duration_s": 3.124,
+      "eval_count": 55,
+      "eval_tokens_per_sec": 17.6,
+      "ram_used_delta_mb": 1023.32
+    },
+    {
+      "run_label": "Warm Run 1 (Growth Strategy Prompt)",
+      "prompt": "A B2B SaaS tool has high signup volume but 85% drop-off before inviting a teammate. Suggest 3 tactical growth experiments to fix this activation bottleneck.",
+      "response_text": "To address the activation bottleneck and improve the conversion rate, consider the following tactical growth experiments:\n\n1. **Personalized Onboarding Experience:**\n   - **Experiment:** Implement a personalized onboarding process that tailors the experience based on the user's role and previous interactions within the platform.\n   - **Action Steps:**\n     - Conduct user interviews to understand their pain points and preferences.\n     - Use A/B testing to compare different onboarding paths.\n     - Offer a choice of onboarding paths, such as a quick tutorial followed by a more detailed guide.\n     - Provide personalized recommendations and resources based on the user's previous activity.\n\n2. **Social Proof and Community Engagement:**\n   - **Experiment:** Create a community forum or group chat where users can share their experiences, tips, and challenges.\n   - **Action Steps:**\n     - Set up a dedicated Slack channel or a private Facebook group.\n     - Encourage users to share their progress and challenges.\n     - Host regular Q&A sessions or webinars led by the product team.\n     - Offer badges or rewards for active participation.\n\n3. **Gamification and Incentives:**\n   - **Experiment:** Introduce gamification elements like badges, leaderboards, and rewards for completing certain milestones.\n   -",
+      "total_elapsed_s": 15.947,
+      "ttft_s": 0.528,
+      "load_duration_s": 0.001,
+      "prompt_eval_duration_s": 0.51,
+      "prompt_eval_count": 57,
+      "prompt_tokens_per_sec": 111.81,
+      "eval_duration_s": 15.419,
+      "eval_count": 256,
+      "eval_tokens_per_sec": 16.6,
+      "ram_used_delta_mb": 46.01
+    },
+    {
+      "run_label": "Warm Run 2 (Analytical Prompt)",
+      "prompt": "Explain the difference between retention rate and cohort churn rate with a small numerical example.",
+      "response_text": "Certainly! Let's break down the difference between retention rate and cohort churn rate with a small numerical example.\n\n### Retention Rate\nThe retention rate measures the percentage of customers who remain active within a specific period. It is calculated as follows:\n\n\\[ \\text{Retention Rate} = \\frac{\\text{Number of Customers at the End of Period}}{\\text{Number of Customers at the Start of Period}} \\times 100 \\]\n\n**Example:**\nSuppose you have 100 customers at the start of a quarter, and 80 customers remain active at the end of the quarter.\n\n\\[ \\text{Retention Rate} = \\frac{80}{100} \\times 100 = 80\\% \\]\n\n### Cohort Churn Rate\nThe cohort churn rate measures the percentage of customers who leave a specific group of customers over a period. It is calculated as follows:\n\n\\[ \\text{Cohort Churn Rate} = \\frac{\\text{Number of Customers at the Start of Period}}{\\text{Number of Customers at the End of Period}} \\times 100 \\]\n\n**Example:**\nSuppose you have 100 customers at the start of a quarter, and",
+      "total_elapsed_s": 15.42,
+      "ttft_s": 0.306,
+      "load_duration_s": 0.001,
+      "prompt_eval_duration_s": 0.285,
+      "prompt_eval_count": 38,
+      "prompt_tokens_per_sec": 133.16,
+      "eval_duration_s": 15.114,
+      "eval_count": 256,
+      "eval_tokens_per_sec": 16.94,
+      "ram_used_delta_mb": 63.46
+    }
+  ]
+}

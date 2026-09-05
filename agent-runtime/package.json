@@ -1,0 +1,29 @@
+{
+  "name": "lenny-growth-assistant-agent-runtime",
+  "version": "0.1.0",
+  "description": "Internal Node.js agent runtime hosting Pi Coding Agent SDK and allowlisted skills",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "node dist/index.js",
+    "test": "node tests/test_security.ts && node tests/test_skills.ts"
+  },
+  "keywords": [
+    "pi-coding-agent",
+    "agent-runtime",
+    "rag"
+  ],
+  "author": "Lenny Growth Assistant Team",
+  "license": "MIT",
+  "dependencies": {
+    "@mariozechner/pi-coding-agent": "^0.73.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0"
+  },
+  "private": true
+}

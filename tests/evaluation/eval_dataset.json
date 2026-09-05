@@ -1,0 +1,285 @@
+{
+  "description": "Lenny Growth Assistant — Curated Evaluation Benchmark Dataset per Section 14 of docs/implementation-contract.md",
+  "version": "1.0",
+  "metrics_target": {
+    "min_citation_accuracy": 0.90,
+    "target_top3_matches": 23,
+    "total_in_domain_questions": 25,
+    "required_abstention_rate": 1.0,
+    "total_out_of_domain_questions": 10
+  },
+  "in_domain_eval_set": [
+    {
+      "id": "eval_01",
+      "category": "Growth & Onboarding",
+      "question": "Why is onboarding the only part of your product experience that a hundred percent of users touch?",
+      "expected_guest": "Adam Fishman",
+      "expected_episode_title": "How to build a high-performing growth team | Adam Fishman",
+      "key_phrases": ["onboarding is the only part", "hundred percent of people", "promise that you made"]
+    },
+    {
+      "id": "eval_02",
+      "category": "Growth Team Building",
+      "question": "What is Adam Fishman's framework for building and evaluating growth talent?",
+      "expected_guest": "Adam Fishman",
+      "expected_episode_title": "How to build a high-performing growth team | Adam Fishman",
+      "key_phrases": ["growth competency model", "evaluating growth talent", "Lyft", "Patreon"]
+    },
+    {
+      "id": "eval_03",
+      "category": "Product-Market Fit",
+      "question": "How did Rahul Vohra measure product-market fit at Superhuman using the Sean Ellis survey question?",
+      "expected_guest": "Rahul Vohra",
+      "expected_episode_title": "How to Measure Product-Market Fit | Rahul Vohra",
+      "key_phrases": ["how disappointed would you be", "40 percent", "Superhuman", "Sean Ellis"]
+    },
+    {
+      "id": "eval_04",
+      "category": "Product-Market Fit",
+      "question": "What engine of growth does Rahul Vohra recommend optimizing when measuring PMF?",
+      "expected_guest": "Rahul Vohra",
+      "expected_episode_title": "How to Measure Product-Market Fit | Rahul Vohra",
+      "key_phrases": ["high expectation customer", "love the product", "product roadmap"]
+    },
+    {
+      "id": "eval_05",
+      "category": "Pricing & Monetization",
+      "question": "Why does Madhavan Ramanujam argue that you should design monetization around the product rather than at the end?",
+      "expected_guest": "Madhavan Ramanujam",
+      "expected_episode_title": "Monetizing Innovation | Madhavan Ramanujam",
+      "key_phrases": ["willingness to pay", "monetization around the product", "feature shock", "pricing"]
+    },
+    {
+      "id": "eval_06",
+      "category": "Pricing & Monetization",
+      "question": "What are the four common monetization failure modes according to Madhavan Ramanujam?",
+      "expected_guest": "Madhavan Ramanujam",
+      "expected_episode_title": "Monetizing Innovation | Madhavan Ramanujam",
+      "key_phrases": ["feature shock", "minivation", "hidden gem", "undead"]
+    },
+    {
+      "id": "eval_07",
+      "category": "Product Strategy",
+      "question": "What is Shreyas Doshi's LNO framework for task prioritization and time management?",
+      "expected_guest": "Shreyas Doshi",
+      "expected_episode_title": "Product Management and Career Strategy | Shreyas Doshi",
+      "key_phrases": ["leverage", "neutral", "overhead", "LNO framework"]
+    },
+    {
+      "id": "eval_08",
+      "category": "Product Strategy",
+      "question": "How does Shreyas Doshi define high-agency product management?",
+      "expected_guest": "Shreyas Doshi",
+      "expected_episode_title": "Product Management and Career Strategy | Shreyas Doshi",
+      "key_phrases": ["high agency", "bend reality", "conviction", "ownership"]
+    },
+    {
+      "id": "eval_09",
+      "category": "Metrics & Analytics",
+      "question": "What is the difference between leading and lagging indicators according to Elena Verna?",
+      "expected_guest": "Elena Verna",
+      "expected_episode_title": "Product-Led Growth and Retention | Elena Verna",
+      "key_phrases": ["leading indicator", "lagging indicator", "retention", "activation"]
+    },
+    {
+      "id": "eval_10",
+      "category": "Product-Led Growth",
+      "question": "What are the core components of a product-led sales motion according to Elena Verna?",
+      "expected_guest": "Elena Verna",
+      "expected_episode_title": "Product-Led Growth and Retention | Elena Verna",
+      "key_phrases": ["product qualified leads", "PQL", "freemium", "self-serve", "sales assist"]
+    },
+    {
+      "id": "eval_11",
+      "category": "Retention & Churn",
+      "question": "How does Casey Winters analyze retention curves to determine if a product has flattened out?",
+      "expected_guest": "Casey Winters",
+      "expected_episode_title": "Retention Loops and Growth Loops | Casey Winters",
+      "key_phrases": ["retention curve", "flattening out", "cohort analysis", "Pinterest", "Grubhub"]
+    },
+    {
+      "id": "eval_12",
+      "category": "Growth Loops",
+      "question": "Why are growth loops superior to traditional marketing funnels according to Casey Winters?",
+      "expected_guest": "Casey Winters",
+      "expected_episode_title": "Retention Loops and Growth Loops | Casey Winters",
+      "key_phrases": ["growth loops", "reinvestment", "sustainable acquisition", "funnel decay"]
+    },
+    {
+      "id": "eval_13",
+      "category": "Virality & Referral",
+      "question": "What is the viral coefficient K-factor formula and how did Brian Balfour apply it?",
+      "expected_guest": "Brian Balfour",
+      "expected_episode_title": "Four Growth Fits | Brian Balfour",
+      "key_phrases": ["viral coefficient", "k-factor", "referral loop", "invites"]
+    },
+    {
+      "id": "eval_14",
+      "category": "Market & Product Fit",
+      "question": "What are Brian Balfour's Four Fits necessary for building a $100M+ company?",
+      "expected_guest": "Brian Balfour",
+      "expected_episode_title": "Four Growth Fits | Brian Balfour",
+      "key_phrases": ["market product fit", "product channel fit", "channel model fit", "model market fit"]
+    },
+    {
+      "id": "eval_15",
+      "category": "B2B Sales & GTM",
+      "question": "How does Pete Kazanjy advise founders to close their first 10 enterprise customers?",
+      "expected_guest": "Pete Kazanjy",
+      "expected_episode_title": "Founding Sales and Enterprise GTM | Pete Kazanjy",
+      "key_phrases": ["founder-led sales", "first 10 customers", "discovery calls", "qualification"]
+    },
+    {
+      "id": "eval_16",
+      "category": "Leadership & Management",
+      "question": "What is Claire Hughes Johnson's advice on creating a 'Working with Claire' guide?",
+      "expected_guest": "Claire Hughes Johnson",
+      "expected_episode_title": "Scaling People and High-Performing Cultures | Claire Hughes Johnson",
+      "key_phrases": ["working with me document", "operating manual", "Stripe", "communication norms"]
+    },
+    {
+      "id": "eval_17",
+      "category": "Leadership & Hiring",
+      "question": "How does Claire Hughes Johnson recommend assessing self-awareness during interviews?",
+      "expected_guest": "Claire Hughes Johnson",
+      "expected_episode_title": "Scaling People and High-Performing Cultures | Claire Hughes Johnson",
+      "key_phrases": ["self-awareness", "mistakes", "learning agility", "interview questions"]
+    },
+    {
+      "id": "eval_18",
+      "category": "Design & Prototyping",
+      "question": "How does Bob Moesta use the Jobs to Be Done (JTBD) framework to uncover customer switching triggers?",
+      "expected_guest": "Bob Moesta",
+      "expected_episode_title": "Jobs to Be Done and Demand-Side Sales | Bob Moesta",
+      "key_phrases": ["jobs to be done", "four forces", "push and pull", "anxiety of the new"]
+    },
+    {
+      "id": "eval_19",
+      "category": "Customer Discovery",
+      "question": "What are the four forces of customer progress in Bob Moesta's JTBD framework?",
+      "expected_guest": "Bob Moesta",
+      "expected_episode_title": "Jobs to Be Done and Demand-Side Sales | Bob Moesta",
+      "key_phrases": ["push of the current situation", "pull of the new solution", "anxiety", "habit"]
+    },
+    {
+      "id": "eval_20",
+      "category": "Experimentation",
+      "question": "How did Ronny Kohavi structure trustworthy online experimentation at Microsoft and Amazon?",
+      "expected_guest": "Ronny Kohavi",
+      "expected_episode_title": "The Science of A/B Testing | Ronny Kohavi",
+      "key_phrases": ["A/B testing", "twyman's law", "statistical significance", "overall evaluation criterion", "OEC"]
+    },
+    {
+      "id": "eval_21",
+      "category": "Experimentation",
+      "question": "What is Twyman's Law and why is it crucial for growth experimentation teams?",
+      "expected_guest": "Ronny Kohavi",
+      "expected_episode_title": "The Science of A/B Testing | Ronny Kohavi",
+      "key_phrases": ["Twyman's Law", "too good to be true", "metric error", "experimentation"]
+    },
+    {
+      "id": "eval_22",
+      "category": "Career & PM Craft",
+      "question": "What are the essential skills of an exceptional Chief Product Officer according to Ken Norton?",
+      "expected_guest": "Ken Norton",
+      "expected_episode_title": "The CPO Role and Executive Product Leadership | Ken Norton",
+      "key_phrases": ["executive presence", "vision", "resource allocation", "mentorship"]
+    },
+    {
+      "id": "eval_23",
+      "category": "Career & PM Craft",
+      "question": "How does Ken Norton advise product managers to manage their calendar and energy?",
+      "expected_guest": "Ken Norton",
+      "expected_episode_title": "The CPO Role and Executive Product Leadership | Ken Norton",
+      "key_phrases": ["maker versus manager", "focus time", "calendar audit", "creative energy"]
+    },
+    {
+      "id": "eval_24",
+      "category": "Product Discovery",
+      "question": "What is Teresa Torres's Opportunity Solution Tree framework for continuous discovery?",
+      "expected_guest": "Teresa Torres",
+      "expected_episode_title": "Continuous Discovery Habits | Teresa Torres",
+      "key_phrases": ["opportunity solution tree", "desired outcome", "customer interviews", "assumption testing"]
+    },
+    {
+      "id": "eval_25",
+      "category": "Product Discovery",
+      "question": "How often should a product team conduct customer interviews according to Teresa Torres?",
+      "expected_guest": "Teresa Torres",
+      "expected_episode_title": "Continuous Discovery Habits | Teresa Torres",
+      "key_phrases": ["weekly touchpoints", "continuous discovery", "interview cadence", "uncover opportunities"]
+    }
+  ],
+  "out_of_domain_abstention_set": [
+    {
+      "id": "abstain_01",
+      "category": "Culinary",
+      "question": "What are the key ingredients and bake time for classic French chocolate soufflé?",
+      "expected_behavior": "abstain",
+      "reason": "Completely unrelated to product management, growth, or startups."
+    },
+    {
+      "id": "abstain_02",
+      "category": "Physics",
+      "question": "How does quantum chromodynamics explain the strong interaction between quarks and gluons?",
+      "expected_behavior": "abstain",
+      "reason": "Theoretical high-energy physics outside the podcast corpus."
+    },
+    {
+      "id": "abstain_03",
+      "category": "Mechanics",
+      "question": "How do I replace the hydraulic brake calipers and bleed the brake fluid on a mountain bike?",
+      "expected_behavior": "abstain",
+      "reason": "Bicycle repair and maintenance."
+    },
+    {
+      "id": "abstain_04",
+      "category": "Medicine",
+      "question": "What are the recommended first-line pharmacological treatments for acute pediatric otitis media?",
+      "expected_behavior": "abstain",
+      "reason": "Medical prescription advice."
+    },
+    {
+      "id": "abstain_05",
+      "category": "Gardening",
+      "question": "How do I test soil pH and adjust acidity for growing organic blueberries?",
+      "expected_behavior": "abstain",
+      "reason": "Horticulture and agricultural soil chemistry."
+    },
+    {
+      "id": "abstain_06",
+      "category": "History",
+      "question": "What were the primary logistics failures of the Grand Armée during the 1812 invasion of Russia?",
+      "expected_behavior": "abstain",
+      "reason": "19th century military history."
+    },
+    {
+      "id": "abstain_07",
+      "category": "Astronomy",
+      "question": "What is the Chandrasekhar limit and how does it determine white dwarf stellar collapse?",
+      "expected_behavior": "abstain",
+      "reason": "Astrophysics."
+    },
+    {
+      "id": "abstain_08",
+      "category": "Home Improvement",
+      "question": "How do you frame a load-bearing wall using 2x6 Douglas fir lumber and structural jack studs?",
+      "expected_behavior": "abstain",
+      "reason": "Residential carpentry and building trades."
+    },
+    {
+      "id": "abstain_09",
+      "category": "Music Theory",
+      "question": "Explain the harmonic function of a Neapolitan sixth chord resolving to a dominant seventh.",
+      "expected_behavior": "abstain",
+      "reason": "Classical music harmony."
+    },
+    {
+      "id": "abstain_10",
+      "category": "Zoology",
+      "question": "What is the migratory flight corridor and winter nesting behavior of the Arctic tern?",
+      "expected_behavior": "abstain",
+      "reason": "Ornithology and avian wildlife biology."
+    }
+  ]
+}

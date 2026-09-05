@@ -1,0 +1,124 @@
+# ==============================================================================
+# Git Ignore Rules — Lenny Growth Assistant
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Secrets and Environment Configurations
+# ------------------------------------------------------------------------------
+# Block all live environment files and secret keys from ever being tracked
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+*.key
+*.pem
+*.cert
+*.crt
+
+# Explicitly allow the public template
+!.env.example
+
+# ------------------------------------------------------------------------------
+# 2. Python Environment & Artifacts
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+/lib/
+/lib64/
+!frontend/src/lib/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.conda/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# ------------------------------------------------------------------------------
+# 3. Node.js & Next.js Frontend
+# ------------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-store/
+
+# Next.js Build Output
+.next/
+out/
+
+# TypeScript Cache
+*.tsbuildinfo
+next-env.d.ts
+
+# ------------------------------------------------------------------------------
+# 4. Databases & Storage
+# ------------------------------------------------------------------------------
+postgres_data/
+*.sqlite
+*.sqlite3
+*.db
+
+# ------------------------------------------------------------------------------
+# 5. Raw Ingestion & Temporary Download Caches
+# ------------------------------------------------------------------------------
+data/transcripts_raw/
+data/cache/
+ingestion/raw/
+*.tmp
+
+# ------------------------------------------------------------------------------
+# 6. Operating System & Editor Files
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+
+# ------------------------------------------------------------------------------
+# 7. Explicit Preservation Rules
+# ------------------------------------------------------------------------------
+!.gitkeep
