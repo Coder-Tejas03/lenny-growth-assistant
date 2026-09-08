@@ -279,4 +279,4 @@ lenny-growth-assistant/
 
 ## 9. License
 
-Developed for the Oogway Labs Forward Deployed Engineer Take-Home Assignment. Grounded in transcripts from *Lenny's Podcast* ([ChatPRD/lennys-podcast-transcripts](https://github.com/ChatPRD/lennys-podcast-transcripts)).
+Grounded in transcripts from *Lenny's Podcast* ([ChatPRD/lennys-podcast-transcripts](https://github.com/ChatPRD/lennys-podcast-transcripts)).
