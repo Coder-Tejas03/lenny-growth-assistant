@@ -17,6 +17,10 @@ services:
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: PYTHONPATH
+        value: ".:.."
       - key: APP_ENV
         value: production
       - key: DEBUG

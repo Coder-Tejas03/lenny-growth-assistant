@@ -17,7 +17,11 @@ from app.retrieval.models import (
     EvidenceChunk,
     RetrievalResult,
 )
-from ingestion.embeddings import EmbeddingClient
+try:
+    from app.retrieval.embeddings import EmbeddingClient
+except ImportError:
+    from ingestion.embeddings import EmbeddingClient
+
 
 logger = logging.getLogger(__name__)
 

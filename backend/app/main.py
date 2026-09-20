@@ -5,12 +5,21 @@ Configures ASGI middleware, CORS, structured request logging,
 custom exception handlers, and modular API routers.
 """
 
+import sys
+from pathlib import Path
 from typing import Dict
 from dotenv import load_dotenv
+
+# Ensure repository root is on sys.path so root packages like `ingestion` resolve
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()
 
 from app.api.artifacts import router as artifacts_router
 from app.api.chat import router as chat_router

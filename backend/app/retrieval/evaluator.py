@@ -21,7 +21,11 @@ from sqlalchemy.pool import NullPool
 from app.core.config import settings
 from app.retrieval.models import CANONICAL_ABSTENTION_MESSAGE
 from app.retrieval.retriever import TranscriptRetriever
-from ingestion.embeddings import EmbeddingClient
+try:
+    from app.retrieval.embeddings import EmbeddingClient
+except ImportError:
+    from ingestion.embeddings import EmbeddingClient
+
 
 logger = logging.getLogger(__name__)
 
